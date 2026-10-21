@@ -24,14 +24,17 @@ public class PrintingThread extends Thread {
      * @param repeatCount how many times to print it
      */
     public PrintingThread(String threadName, String message, int repeatCount) {
-        // TODO: call super with threadName
+        super(threadName);
         this.message = message;
         this.repeatCount = repeatCount;
     }
 
     @Override
     public void run() {
-        // TODO: record the executing thread name, then print message repeatCount times
-        throw new UnsupportedOperationException("Implement this method");
+        executingThreadName = Thread.currentThread().getName();
+        for (int i = 0; i < repeatCount; i++) {
+            System.out.println(message);
+        }
+
     }
 }
