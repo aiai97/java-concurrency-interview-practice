@@ -20,8 +20,31 @@ public class ParallelMerge {
      * @return the total sum of all elements
      */
     public long sumArray(int[] array) throws InterruptedException {
-        // TODO: implement parallel sum using two threads + join
-        throw new UnsupportedOperationException("Implement this method");
+        if(array.length == 0) return 0;
+        if(array.length == 1) return array[0];
+        int mid = array.length / 2;
+        long[] sums = new long[2];
+        Runnable task1 = () -> {
+            int res = 0;
+            for (int i = 0; i < mid; i++) {
+                res += array[i];
+            }
+            sums[0] = res;
+        };
+        Runnable task2 = () -> {
+            int res = 0;
+            for (int i = mid; i < array.length; i++) {
+                res += array[i];
+            }
+            sums[1] = res;
+        };
+        Thread leftThread = new Thread(task1);
+        Thread rightThread = new Thread(task2);
+        leftThread.start();
+        rightThread.start();
+        leftThread.join();
+        rightThread.join();
+        return sums[0] + sums[1];
     }
 
     /**
@@ -35,8 +58,33 @@ public class ParallelMerge {
      * @return the maximum value in the array
      */
     public int findMax(int[] array) throws InterruptedException {
-        // TODO: implement parallel max using two threads + join
-        throw new UnsupportedOperationException("Implement this method");
+        int mid = array.length / 2;
+        int[] maxes = new int[2];
+        Runnable task1 = () -> {
+            int max = array[0];
+            for (int i = 0; i < mid; i++) {
+                if (array[i] > max) {
+                    max = array[i];
+                }
+            }
+            maxes[0] = max;
+        };
+        Runnable task2 = () -> {
+            int max = array[mid];
+            for (int i = mid; i < array.length; i++) {
+                if (array[i] > max) {
+                    max = array[i];
+                }
+            }
+            maxes[1] = max;
+        };
+        Thread leftThread = new Thread(task1);
+        Thread rightThread = new Thread(task2);
+        leftThread.start();
+        rightThread.start();
+        leftThread.join();
+        rightThread.join();
+        return Math.max(maxes[0], maxes[1]);
     }
 
     /**
@@ -47,7 +95,9 @@ public class ParallelMerge {
      * @return true if the task completed within the timeout; false if it timed out
      */
     public boolean runWithTimeout(Runnable task, long timeoutMillis) throws InterruptedException {
-        // TODO: start thread, join with timeout, check isAlive()
-        throw new UnsupportedOperationException("Implement this method");
+        Thread thread = new Thread(task);
+        thread.start();
+        thread.join(timeoutMillis);
+        return !thread.isAlive();
     }
 }

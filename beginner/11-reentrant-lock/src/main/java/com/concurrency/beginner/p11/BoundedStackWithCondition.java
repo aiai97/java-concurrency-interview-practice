@@ -30,7 +30,16 @@ public class BoundedStackWithCondition<T> {
     public void push(T item) throws InterruptedException {
         // TODO:
         //  lock → while full: notFull.await() → push → notEmpty.signal() → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        lock.lock();
+        try{
+            while(stack.size() == capacity){
+                notFull.await();
+            }
+            stack.push(item);
+            notEmpty.signal();
+        }finally{
+            lock.unlock();
+        }
     }
 
     /**

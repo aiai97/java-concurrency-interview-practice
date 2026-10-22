@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class VolatileStatusBoard {
 
     // TODO: declare `status` as volatile
-    private String status = "INIT";
+    private volatile String status = "INIT";
 
     private final AtomicLong readCount = new AtomicLong(0);
 
@@ -20,7 +20,7 @@ public class VolatileStatusBoard {
      */
     public void postStatus(String status) {
         // TODO: assign the volatile field
-        throw new UnsupportedOperationException("Implement this method");
+        this.status = status;
     }
 
     /**
@@ -29,7 +29,8 @@ public class VolatileStatusBoard {
      */
     public String getStatus() {
         // TODO: increment readCount, then return the volatile field
-        throw new UnsupportedOperationException("Implement this method");
+        readCount.incrementAndGet();
+        return status;
     }
 
     /** Returns total number of getStatus() calls across all threads. */

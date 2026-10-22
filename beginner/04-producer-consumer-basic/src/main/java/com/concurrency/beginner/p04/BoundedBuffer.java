@@ -32,7 +32,11 @@ public class BoundedBuffer<T> {
         //  1. while buffer is full, wait()
         //  2. add item to queue
         //  3. notifyAll()
-        throw new UnsupportedOperationException("Implement this method");
+        while (isFull()) {
+            wait();
+        }
+        queue.add(item);
+        notifyAll();
     }
 
     /**
@@ -47,7 +51,12 @@ public class BoundedBuffer<T> {
         //  2. remove and save head of queue
         //  3. notifyAll()
         //  4. return the removed item
-        throw new UnsupportedOperationException("Implement this method");
+       while(isEmpty()){
+           wait();
+       }
+       T item = queue.remove();
+       notifyAll();
+       return item;
     }
 
     /** Returns the number of items currently in the buffer. */

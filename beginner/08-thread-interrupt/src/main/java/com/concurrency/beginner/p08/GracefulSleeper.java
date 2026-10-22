@@ -25,7 +25,16 @@ public class GracefulSleeper {
     public void sleepFor(long millis) {
         // TODO: create and start a thread that sleeps for millis ms
         //       and correctly handles InterruptedException
-        throw new UnsupportedOperationException("Implement this method");
+        sleeperThread = new Thread(() ->{
+            try {
+                Thread.sleep(millis);
+                completedNormally = true;
+            } catch (InterruptedException e) {
+                gotInterrupted = true;
+                Thread.currentThread().interrupt();
+            }
+        });
+        sleeperThread.start();
     }
 
     /**
@@ -34,7 +43,10 @@ public class GracefulSleeper {
      */
     public void interrupt() throws InterruptedException {
         // TODO: call interrupt() on sleeperThread, then join it
-        throw new UnsupportedOperationException("Implement this method");
+        if (sleeperThread != null) {
+            sleeperThread.interrupt();
+            sleeperThread.join();
+        }
     }
 
     /** Waits for the sleeper to finish naturally (used in tests without interruption). */

@@ -20,7 +20,7 @@ public class PerThreadFormatter {
     //  - increments instanceCount each time a new instance is created
     private final ThreadLocal<DecimalFormat> formatter = ThreadLocal.withInitial(() -> {
         instanceCount.incrementAndGet();
-        return new DecimalFormat("0.00"); // placeholder — move logic into your implementation
+        return new DecimalFormat("0.00");
     });
 
     /**
@@ -32,7 +32,7 @@ public class PerThreadFormatter {
      */
     public String format(double value) {
         // TODO: use the ThreadLocal formatter
-        throw new UnsupportedOperationException("Implement this method");
+        return formatter.get().format(value);
     }
 
     /**

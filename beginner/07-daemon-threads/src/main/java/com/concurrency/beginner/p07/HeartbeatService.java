@@ -35,13 +35,29 @@ public class HeartbeatService {
         //  1. Create a thread that loops: sleep intervalMs, invoke beatAction, increment beatCount
         //  2. Set it as a daemon thread
         //  3. Start it
-        throw new UnsupportedOperationException("Implement this method");
+        running = true;
+        heartbeatThread = new Thread(() -> {
+            while (running) {
+                try {
+                    Thread.sleep(intervalMs);
+                    beatAction.run();
+                    beatCount.incrementAndGet();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        heartbeatThread.setDaemon(true);
+        heartbeatThread.start();
     }
 
     /** Signals the heartbeat thread to stop and waits for termination. */
     public void stop() throws InterruptedException {
         // TODO: set running = false, join the thread
-        throw new UnsupportedOperationException("Implement this method");
+        running = false;
+        if (heartbeatThread != null) {
+            heartbeatThread.join();
+        }
     }
 
     /** Returns the number of times the beat action has been fired. */

@@ -28,7 +28,16 @@ public class BankAccount {
      */
     public void deposit(double amount) {
         // TODO: validate, lock, add to balance, unlock (in finally)
-        throw new UnsupportedOperationException("Implement this method");
+        if(amount <= 0){
+            throw new IllegalArgumentException("amount must be positive");
+        }
+        lock.lock();
+        try {
+            balance += amount;
+        } finally {
+            lock.unlock();
+        }
+
     }
 
     /**
@@ -38,13 +47,30 @@ public class BankAccount {
      */
     public void withdraw(double amount) {
         // TODO: validate, lock, check funds, subtract, unlock (in finally)
-        throw new UnsupportedOperationException("Implement this method");
+        if(amount <= 0){
+            throw new IllegalArgumentException("amount must be positive");
+        }
+
+        lock.lock();
+        try {
+            if(amount > balance){
+                throw new IllegalStateException("insufficient funds");
+            }
+            balance -= amount;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /** Returns the current balance. */
     public double getBalance() {
         // TODO: lock, read, unlock (in finally)
-        throw new UnsupportedOperationException("Implement this method");
+        lock.lock();
+        try {
+            return balance;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -60,7 +86,43 @@ public class BankAccount {
         //  2. Lock both accounts (first lock, then second) in a try block
         //  3. Perform withdraw from this, deposit to target
         //  4. Unlock both in reverse order in a finally block
-        throw new UnsupportedOperationException("Implement this method");
+        if (target == null) {
+            throw new IllegalArgumentException(
+                    "target must not be null");
+        }
+
+        if (amount <= 0) {
+            throw new IllegalArgumentException(
+                    "amount must be positive");
+        }
+
+        if (this == target) {
+            return;
+        }
+
+        // 始终先锁 id 较小的账户
+        BankAccount first = this.id < target.id
+                ? this : target;
+        BankAccount second = this.id < target.id
+                ? target : this;
+
+        first.lock.lock();
+        try{
+            second.lock.lock();
+            try {
+                if (this.balance < amount) {
+                    throw new IllegalStateException(
+                            "insufficient funds");
+                }
+                this.balance -= amount;
+                target.balance += amount;
+            } finally {
+                second.lock.unlock();
+            }
+        }finally {
+            first.lock.unlock();
+        }
+
     }
 
     // Package-private for testing lock-ordering

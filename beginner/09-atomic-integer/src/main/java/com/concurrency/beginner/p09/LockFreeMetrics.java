@@ -28,7 +28,12 @@ public class LockFreeMetrics {
         //  2. Add ms to totalLatency
         //  3. Update minLatency using CAS loop
         //  4. Update maxLatency using CAS loop
-        throw new UnsupportedOperationException("Implement this method");
+        count.incrementAndGet();
+        totalLatency.addAndGet(ms);
+        // Update minLatency using CAS loop
+        minLatency.updateAndGet(current -> Math.min(current, ms));
+        // Update maxLatency using CAS loop
+        maxLatency.updateAndGet(current -> Math.max(current, ms));
     }
 
     /** Returns the total number of recordings. */

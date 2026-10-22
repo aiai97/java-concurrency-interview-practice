@@ -14,26 +14,22 @@ public class RequestContext {
 
     /** Sets the user ID for the current thread. */
     public static void setUserId(String userId) {
-        // TODO
-        throw new UnsupportedOperationException("Implement this method");
+        userIdLocal.set(userId);
     }
 
     /** Returns the user ID for the current thread, or null if not set. */
     public static String getUserId() {
-        // TODO
-        throw new UnsupportedOperationException("Implement this method");
+        return userIdLocal.get();
     }
 
     /** Sets the request ID for the current thread. */
     public static void setRequestId(String requestId) {
-        // TODO
-        throw new UnsupportedOperationException("Implement this method");
+        requestIdLocal.set(requestId);
     }
 
     /** Returns the request ID for the current thread, or null if not set. */
     public static String getRequestId() {
-        // TODO
-        throw new UnsupportedOperationException("Implement this method");
+        return requestIdLocal.get();
     }
 
     /**
@@ -42,7 +38,7 @@ public class RequestContext {
      * to avoid memory leaks in thread pools.
      */
     public static void clear() {
-        // TODO: call remove() on both ThreadLocals
-        throw new UnsupportedOperationException("Implement this method");
+        userIdLocal.remove();
+        requestIdLocal.remove();
     }
 }

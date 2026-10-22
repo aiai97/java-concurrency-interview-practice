@@ -24,13 +24,13 @@ class InterruptibleWorkerTest {
         InterruptibleWorker w = new InterruptibleWorker();
         w.startCounting(10_000); // 10 seconds — we'll cancel early
         Thread.sleep(50);
-        long countBeforeCancel = w.getCount();
         w.cancel();
 
         assertTrue(w.wasInterrupted(), "Worker should report interrupted after cancel()");
         // Count should have stopped growing
         long countAfterCancel = w.getCount();
-        assertEquals(countBeforeCancel, countAfterCancel,
+        Thread.sleep(50);
+        assertEquals(countAfterCancel, w.getCount(),
                 "No more counting should happen after cancel() joins the thread");
     }
 

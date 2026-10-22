@@ -17,8 +17,9 @@ public class TaskRunner {
      * @param threadName name for the new thread
      */
     public void runTask(Runnable task, String threadName) throws InterruptedException {
-        // TODO: create a thread with the given name, start it, then join it
-        throw new UnsupportedOperationException("Implement this method");
+        Thread thread = new Thread(task, threadName);
+        thread.start();
+        thread.join();
     }
 
     /**
@@ -28,8 +29,15 @@ public class TaskRunner {
      * @param tasks list of tasks to run concurrently
      */
     public void runTasksParallel(List<Runnable> tasks) throws InterruptedException {
-        // TODO: start all threads, then join all threads
-        throw new UnsupportedOperationException("Implement this method");
+        Thread[] threads = new Thread[tasks.size()];
+        for (int i = 0; i < tasks.size(); i++) {
+            threads[i] = new Thread(tasks.get(i), "worker-" + i);
+            threads[i].start();
+        }
+
+        for (Thread thread : threads) {
+            thread.join();
+        }
     }
 
     /**
@@ -41,7 +49,10 @@ public class TaskRunner {
      * @return a Runnable implementing the described behavior
      */
     public Runnable buildCountingRunnable(List<Integer> collector, int value, int times) {
-        // TODO: return a lambda or anonymous class
-        throw new UnsupportedOperationException("Implement this method");
+        return () -> {
+            for (int i = 0; i < times; i++) {
+                collector.add(value);
+            }
+        };
     }
 }

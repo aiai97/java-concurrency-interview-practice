@@ -12,7 +12,7 @@ package com.concurrency.beginner.p06;
 public class StopFlag {
 
     // TODO: declare `running` as volatile
-    private boolean running = false;
+    private volatile boolean running = false;
 
     private volatile long count = 0;
     private Thread worker;
@@ -22,7 +22,13 @@ public class StopFlag {
      */
     public void start() {
         // TODO: set running = true, then start a thread that loops while running is true
-        throw new UnsupportedOperationException("Implement this method");
+        running = true;
+        worker = new Thread(() -> {
+            while (running) {
+                count++;
+            }
+        });
+        worker.start();
     }
 
     /**
@@ -30,7 +36,10 @@ public class StopFlag {
      */
     public void stop() throws InterruptedException {
         // TODO: set running = false, then join the worker thread
-        throw new UnsupportedOperationException("Implement this method");
+        running = false;
+        if (worker != null) {
+            worker.join();
+        }
     }
 
     /** Returns approximate number of loop iterations completed. */

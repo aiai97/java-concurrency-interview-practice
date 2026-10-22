@@ -19,7 +19,7 @@ public class LockFreeIdGenerator {
      */
     public int nextId() {
         // TODO: one-liner using incrementAndGet()
-        throw new UnsupportedOperationException("Implement this method");
+        return counter.incrementAndGet();
     }
 
     /** Returns the last issued ID, or 0 if nextId() has never been called. */

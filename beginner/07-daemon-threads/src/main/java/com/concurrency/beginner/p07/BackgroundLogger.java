@@ -23,16 +23,31 @@ public class BackgroundLogger {
      * check the stop flag even when the queue is empty.
      */
     public void start() {
-        // TODO: create daemon thread, start it
-        throw new UnsupportedOperationException("Implement this method");
+        running = true;
+        loggerThread = new Thread(() -> {
+            while (running || !queue.isEmpty()) {
+                String message = null;
+                try {
+                    message = queue.poll(100, TimeUnit.MILLISECONDS);
+                    if (message != null) {
+                        synchronized (logged) {
+                            logged.add(message);
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        loggerThread.setDaemon(true);
+        loggerThread.start();
     }
 
     /**
      * Enqueues a message for background logging. Must not block the caller.
      */
     public void log(String message) {
-        // TODO: add to queue (offer is fine)
-        throw new UnsupportedOperationException("Implement this method");
+        queue.offer(message);
     }
 
     /**
@@ -40,7 +55,13 @@ public class BackgroundLogger {
      */
     public List<String> stop() throws InterruptedException {
         // TODO: signal stop, join thread, return logged list
-        throw new UnsupportedOperationException("Implement this method");
+        running = false;
+        if (loggerThread != null) {
+            loggerThread.join();
+        }
+        synchronized (logged) {
+            return new ArrayList<>(logged);  // prefer snaphost
+        }
     }
 
     /** Returns messages logged so far (snapshot). */

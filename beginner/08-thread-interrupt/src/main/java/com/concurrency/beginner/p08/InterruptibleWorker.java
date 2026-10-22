@@ -26,7 +26,16 @@ public class InterruptibleWorker {
         //  - increments count each iteration
         //  - if InterruptedException is caught (from sleep or other blocking call),
         //    sets interrupted = true and returns
-        throw new UnsupportedOperationException("Implement this method");
+        workerThread = new Thread(() -> {
+            long startTime = System.currentTimeMillis();
+            while (!Thread.currentThread().isInterrupted() && System.currentTimeMillis() - startTime < durationMs) {
+                count.incrementAndGet();
+            }
+            if (Thread.currentThread().isInterrupted()) {
+                interrupted = true;
+            }
+        });
+        workerThread.start();
     }
 
     /**
@@ -35,7 +44,10 @@ public class InterruptibleWorker {
      */
     public void cancel() throws InterruptedException {
         // TODO: interrupt the thread, then join it
-        throw new UnsupportedOperationException("Implement this method");
+        if(workerThread != null){
+            workerThread.interrupt();
+            workerThread.join();
+        }
     }
 
     /** Returns the number of loop iterations completed before stopping. */
