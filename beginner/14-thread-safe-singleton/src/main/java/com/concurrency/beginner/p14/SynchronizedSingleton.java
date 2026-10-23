@@ -13,12 +13,13 @@ public class SynchronizedSingleton {
 
     private static final AtomicInteger creationCount = new AtomicInteger(0);
     private final int id;
+    private static SynchronizedSingleton instance = null;
 
     // TODO: add the instance field (and Holder class if needed)
 
     private SynchronizedSingleton() {
         // TODO: increment creationCount and assign a unique id
-        throw new UnsupportedOperationException("Implement constructor");
+        id = creationCount.incrementAndGet();
     }
 
     /**
@@ -27,7 +28,12 @@ public class SynchronizedSingleton {
      */
     public static SynchronizedSingleton getInstance() {
         // TODO: implement the synchronized getInstance pattern
-        throw new UnsupportedOperationException("Implement this method");
+        synchronized (SynchronizedSingleton.class) {
+            if (instance == null) {
+                instance = new SynchronizedSingleton();
+            }
+            return instance;
+        }
     }
 
     /** Returns the unique ID assigned to this instance at construction. */
@@ -38,7 +44,10 @@ public class SynchronizedSingleton {
 
     /** Resets state for testing purposes — DO NOT use in production code. */
     static void resetForTesting() {
-        creationCount.set(0);
         // TODO: if you hold a static instance field, reset it to null here
+        synchronized (SynchronizedSingleton.class) {
+            instance = null;
+            creationCount.set(0);
+        }
     }
 }

@@ -13,12 +13,13 @@ public class DoubleCheckedSingleton {
 
     private static final AtomicInteger creationCount = new AtomicInteger(0);
     private final int id;
+    private static volatile DoubleCheckedSingleton instance;
 
     // TODO: add the instance field (and Holder class if needed)
 
     private DoubleCheckedSingleton() {
         // TODO: increment creationCount and assign a unique id
-        throw new UnsupportedOperationException("Implement constructor");
+        id = creationCount.incrementAndGet();
     }
 
     /**
@@ -27,7 +28,14 @@ public class DoubleCheckedSingleton {
      */
     public static DoubleCheckedSingleton getInstance() {
         // TODO: implement the double-checked locking (DCL) with volatile pattern
-        throw new UnsupportedOperationException("Implement this method");
+        if(instance == null) {
+            synchronized(DoubleCheckedSingleton.class) {
+                if(instance == null) {
+                    instance = new DoubleCheckedSingleton();
+                }
+            }
+        }
+        return instance;
     }
 
     /** Returns the unique ID assigned to this instance at construction. */
@@ -39,6 +47,6 @@ public class DoubleCheckedSingleton {
     /** Resets state for testing purposes — DO NOT use in production code. */
     static void resetForTesting() {
         creationCount.set(0);
-        // TODO: if you hold a static instance field, reset it to null here
+        instance = null;
     }
 }

@@ -21,7 +21,9 @@ public class RaceStartGun {
      */
     public void register() throws InterruptedException {
         // TODO: increment waitingCount, await startGun, decrement waitingCount
-        throw new UnsupportedOperationException("Implement this method");
+        waitingCount.incrementAndGet();
+        startGun.await();
+        waitingCount.decrementAndGet();
     }
 
     /**
@@ -29,7 +31,7 @@ public class RaceStartGun {
      */
     public void fire() {
         // TODO: startGun.countDown()
-        throw new UnsupportedOperationException("Implement this method");
+        startGun.countDown();
     }
 
     /** Returns the number of threads currently blocked in register(). */

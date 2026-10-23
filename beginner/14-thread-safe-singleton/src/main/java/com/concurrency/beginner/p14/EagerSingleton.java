@@ -15,10 +15,11 @@ public class EagerSingleton {
     private final int id;
 
     // TODO: add the instance field (and Holder class if needed)
+    private static final EagerSingleton instance = new EagerSingleton();
 
     private EagerSingleton() {
         // TODO: increment creationCount and assign a unique id
-        throw new UnsupportedOperationException("Implement constructor");
+        id = creationCount.incrementAndGet();
     }
 
     /**
@@ -27,7 +28,7 @@ public class EagerSingleton {
      */
     public static EagerSingleton getInstance() {
         // TODO: implement the eager initialisation pattern
-        throw new UnsupportedOperationException("Implement this method");
+        return instance;
     }
 
     /** Returns the unique ID assigned to this instance at construction. */
@@ -39,6 +40,7 @@ public class EagerSingleton {
     /** Resets state for testing purposes — DO NOT use in production code. */
     static void resetForTesting() {
         creationCount.set(0);
+        // instance = null; // Cannot reset a final field
         // TODO: if you hold a static instance field, reset it to null here
     }
 }

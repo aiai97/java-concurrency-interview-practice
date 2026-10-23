@@ -25,7 +25,8 @@ public class ServiceStartupCoordinator {
      */
     public synchronized void registerService(String name) {
         // TODO: add to services list
-        throw new UnsupportedOperationException("Implement this method");
+        services.add(name);
+        latch = new CountDownLatch(services.size());
     }
 
     /**
@@ -34,7 +35,8 @@ public class ServiceStartupCoordinator {
      */
     public void waitForAll() throws InterruptedException {
         // TODO: create latch sized to services.size(), then latch.await()
-        throw new UnsupportedOperationException("Implement this method");
+        latch = new CountDownLatch(services.size());
+        latch.await();
     }
 
     /**
@@ -43,7 +45,7 @@ public class ServiceStartupCoordinator {
      */
     public boolean waitForAll(long timeoutMs) throws InterruptedException {
         // TODO: latch.await(timeoutMs, TimeUnit.MILLISECONDS)
-        throw new UnsupportedOperationException("Implement this method");
+        return latch.await(timeoutMs, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -52,7 +54,8 @@ public class ServiceStartupCoordinator {
      */
     public void serviceReady(String name) {
         // TODO: increment readyCount, then latch.countDown()
-        throw new UnsupportedOperationException("Implement this method");
+        readyCount.incrementAndGet();
+        latch.countDown();
     }
 
     /** Returns how many services have called serviceReady() so far. */

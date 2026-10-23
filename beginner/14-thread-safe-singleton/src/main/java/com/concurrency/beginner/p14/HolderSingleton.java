@@ -15,10 +15,13 @@ public class HolderSingleton {
     private final int id;
 
     // TODO: add the instance field (and Holder class if needed)
+    private static class Holder {
+        private static final HolderSingleton INSTANCE = new HolderSingleton();
+    }
 
     private HolderSingleton() {
         // TODO: increment creationCount and assign a unique id
-        throw new UnsupportedOperationException("Implement constructor");
+        id = creationCount.incrementAndGet();
     }
 
     /**
@@ -27,7 +30,7 @@ public class HolderSingleton {
      */
     public static HolderSingleton getInstance() {
         // TODO: implement the initialisation-on-demand holder (Bill Pugh) pattern
-        throw new UnsupportedOperationException("Implement this method");
+        return Holder.INSTANCE;
     }
 
     /** Returns the unique ID assigned to this instance at construction. */

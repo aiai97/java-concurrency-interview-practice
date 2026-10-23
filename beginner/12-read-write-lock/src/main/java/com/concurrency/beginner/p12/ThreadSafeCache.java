@@ -24,7 +24,13 @@ public class ThreadSafeCache<K, V> {
      */
     public void put(K key, V value) {
         // TODO: writeLock → writeCount++ → store.put → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.writeLock().lock();
+        try {
+            store.put(key, value);
+            writeCount.incrementAndGet();
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 
     /**
@@ -33,7 +39,13 @@ public class ThreadSafeCache<K, V> {
      */
     public V get(K key) {
         // TODO: readLock → readCount++ → return store.get → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.readLock().lock();
+        try {
+            readCount.incrementAndGet();
+            return store.get(key);
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 
     /**
@@ -42,7 +54,13 @@ public class ThreadSafeCache<K, V> {
      */
     public void remove(K key) {
         // TODO: writeLock → writeCount++ → store.remove → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.writeLock().lock();
+        try {
+            store.remove(key);
+            writeCount.incrementAndGet();
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 
     /**
@@ -51,7 +69,13 @@ public class ThreadSafeCache<K, V> {
      */
     public boolean containsKey(K key) {
         // TODO: readLock → readCount++ → return store.containsKey → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.readLock().lock();
+        try {
+            readCount.incrementAndGet();
+            return store.containsKey(key);
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 
     /**
@@ -60,9 +84,16 @@ public class ThreadSafeCache<K, V> {
      */
     public int size() {
         // TODO: readLock → readCount++ → return store.size() → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.readLock().lock();
+        try {
+            readCount.incrementAndGet();
+            return store.size();
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 
-    public long getReadCount()  { return readCount.get(); }
+    public long getReadCount()
+    { return readCount.get(); }
     public long getWriteCount() { return writeCount.get(); }
 }

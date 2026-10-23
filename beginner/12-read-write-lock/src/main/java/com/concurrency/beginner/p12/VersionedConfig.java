@@ -1,6 +1,7 @@
 package com.concurrency.beginner.p12;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -29,7 +30,13 @@ public class VersionedConfig {
      */
     public String updateConfig(String key, String value) {
         // TODO: implement with lock downgrading
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.writeLock().lock();
+        try {
+            config.put(key, value);
+            return config.get(key);
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 
     /**
@@ -38,7 +45,12 @@ public class VersionedConfig {
      */
     public String getConfig(String key) {
         // TODO: readLock → return config.get → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.readLock().lock();
+        try {
+            return config.get(key);
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 
     /**
@@ -47,6 +59,11 @@ public class VersionedConfig {
      */
     public Set<String> getAllKeys() {
         // TODO: readLock → return new HashSet<>(config.keySet()) → unlock(finally)
-        throw new UnsupportedOperationException("Implement this method");
+        rwLock.readLock().lock();
+        try {
+            return new HashSet<>(config.keySet());
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 }
